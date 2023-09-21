@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../api/axios";
+import styled from "styled-components";
 import "./Banner.css";
 
 // Local imports
@@ -7,6 +8,7 @@ import requests from "../api/request";
 
 const Banner = () => {
   const [movie, setMovie] = useState([]);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -34,7 +36,30 @@ const Banner = () => {
     return str?.length > n ? str.substring(0, n) + "..." : str;
   };
 
-  return (
+  return isChecked ? (
+    <>
+      <Container>
+        <HomeContainer>
+          <Iframe
+            width={640}
+            height={300}
+            src={`https://www.youtube.com/embed/${movie?.videos?.results[0]?.key}?controls=0&autoplay=1&mute=1&loop=1&playlist=${movie?.videos?.results[0]?.key}`}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="autoplay; fullscreen"
+          ></Iframe>
+        </HomeContainer>
+      </Container>
+      <button
+        onClick={() => {
+          setIsChecked(false);
+        }}
+        style={{ cursor: "pointer", width: "2rem", height: "2rem" }}
+      >
+        X
+      </button>
+    </>
+  ) : (
     <header
       className="banner"
       style={{
@@ -50,7 +75,12 @@ const Banner = () => {
 
         <div className="banner__buttons">
           {movie?.videos?.results[0]?.key && (
-            <button className="banner__button play">Play</button>
+            <button
+              className="banner__button play"
+              onClick={() => setIsChecked(true)}
+            >
+              Play
+            </button>
           )}
         </div>
         <p className="banner__description">{truncate(movie.overview, 100)}</p>
@@ -61,3 +91,34 @@ const Banner = () => {
 };
 
 export default Banner;
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+`;
+
+const HomeContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`;
+
+const Iframe = styled.iframe`
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.65;
+  border: none;
+
+  &::after {
+    center: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+`;
