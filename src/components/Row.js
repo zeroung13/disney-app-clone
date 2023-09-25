@@ -10,7 +10,6 @@ const Row = ({ title, id, fetchUrl }) => {
 
   const fetchMovieData = useCallback(async () => {
     const res = await axios.get(fetchUrl);
-    // console.log(res);
     setMovies(res.data.results);
   }, [fetchUrl]);
 
